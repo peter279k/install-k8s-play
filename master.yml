@@ -1,0 +1,23 @@
+---
+- name: Configure K8s Master
+  hosts: local_server
+  become: yes
+  gather_facts: no
+  user: devops
+  tasks:
+    - name: Run kubeadm to init Pod network
+      shell: kubeadm init --pod-network-cidr=10.244.0.0/16 --ignore-preflight-errors=all
+    - name: Create .kube directory if it does not exist
+      file:
+        path: /home/devops/.kube
+        state: directory
+    - name: Copy /etc/kubernetes/admin.conf to /home/devops/.kube/config
+      copy:
+        src: /etc/kubernetes/admin.conf
+        dest: /home/devops/.kube/config
+        owner: devops
+        remote_src: yes
+    - name: Deploy Pod Network to Cluster
+      command: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+      environment:
+        KUBECONFIG: /home/devops/.kube/config

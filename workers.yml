@@ -1,0 +1,17 @@
+---
+- name: Get K8s Master join command
+  hosts: local_server
+  user: devops
+  become: yes
+  tasks:
+    - name: Get join command
+      shell: kubeadm token create --print-join-command
+      register: join_command_raw
+
+- name: Configure K8s Workers
+  hosts: local_server
+  user: devops
+  become: yes
+  tasks:
+    - name: join cluster
+      shell: "{{ join_command_raw.stdout_lines[0] }} --ignore-preflight-errors=all"

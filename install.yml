@@ -1,0 +1,95 @@
+---
+- name: Install K8s on Ubuntu 18.04
+  hosts: local_server
+  become: true
+  user: devops
+  tasks:
+    - name: Upgrade all packages to the latest version
+      apt:
+        name: "*"
+        state: latest
+    - name: Install apt-transport-https ca-certificates curl software-properties-common
+      apt:
+          name:
+            - apt-transport-https
+            - ca-certificates
+            - curl
+            - git
+            - vim
+            - wget
+            - software-properties-common
+          state: present
+    - name: Add an docker apt signing key, will not download if present
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+    - name: Add an docker repository with apt_repository
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
+        state: present
+    - name: Run the equivalent of "apt-get update" as a separate step
+      apt:
+          update_cache: yes
+    - name: Install docker-ce
+      apt:
+        name: docker-ce
+        state: present
+    - name: Enable docker service
+      service:
+        name: docker
+        enabled: yes
+        state: started
+    - name: Disable UFW service
+      ufw:
+        state: disabled
+    - name: Add K8s apt-key from Google
+      apt_key:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        state: present
+    - name: Add K8s repo url to /etc/apt folder
+      apt_repository:
+        repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+        state: present
+    - name: Run the equivalent of "apt-get update" as a separate step
+      apt:
+        update_cache: yes
+    - name: output /etc/hosts file
+      command: cat /etc/hosts
+      register: contents
+    - name: Ensure master hostname are located on /etc/hosts file
+      lineinfile:
+        path: /etc/hosts
+        line: "127.0.0.1  master"
+      when: '"127.0.0.1 master" not in contents.stdout'
+    - name: Ensure worker hostname are located on /etc/hosts file
+      lineinfile:
+        path: /etc/hosts
+        line: "127.0.0.1  worker1"
+      when: '"127.0.0.1 worker1" not in contents.stdout'
+    - name: Disable SWAP since kubernetes can't work with swap enabled (1/2)
+      shell: |
+        swapoff -a
+    - name: Disable SWAP in fstab since kubernetes can't work with swap enabled (2/2)
+      replace:
+        path: /etc/fstab
+        regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
+        replace: '# \1'
+    - name: Install K8s packages
+      apt:
+        name:
+          - kubelet
+          - kubeadm
+          - kubectl
+        state: present
+    - name: apt-mark hold kubelet
+      dpkg_selections:
+        name: kubelet
+        selection: hold
+    - name: apt-mark hold kubeadm
+      dpkg_selections:
+        name: kubeadm
+        selection: hold
+    - name: apt-mark hold kubectl
+      dpkg_selections:
+        name: kubectl
+        selection: hold
