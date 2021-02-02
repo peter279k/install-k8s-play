@@ -24,3 +24,4 @@
 - https://stackoverflow.com/questions/53256739/which-kubernetes-version-is-supported-in-docker-version-18-09
 - https://stackoverflow.com/questions/54818913/ansible-run-kubectl-apply-kube-flannel-yml-not-work
 - https://www.digitalocean.com/community/tutorials/how-to-create-a-kubernetes-cluster-using-kubeadm-on-ubuntu-18-04
+- https://stackoverflow.com/questions/62991596/1-nodes-had-taints-that-the-pod-didnt-tolerate-in-kubernetes-cluster
