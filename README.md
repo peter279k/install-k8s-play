@@ -17,7 +17,7 @@
 
 # Usage
 
-- Configure own `ansible.cfg` and `inventory` files.
+- Configure own `ansible.cfg` and `inventory` files on this current repository root folder.
 - Run `ansible-playbook install.yml` command to install Kubernetes packages.
 - Run `ansible-playbook master.yml` command to setup Kubernetes master/cluster.
 - Run `ansible-playbook worker.yml` command to setup Kuberenetes workers.
