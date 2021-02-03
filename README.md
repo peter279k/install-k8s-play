@@ -12,7 +12,7 @@
 # How to create a devops user and configure current SSH key?
 
 - Run `sudo useradd devops -s /bin/bash -m` to create the `devops` user.
-- Run `echo "devops ALL=(ALL) NOPASSWD:ALL" | tee /etc/sudoers.d/devops`.
+- Run `echo "devops ALL=(ALL) NOPASSWD:ALL" | tee /etc/sudoers.d/devops` to use sudo without password authentication.
 - Run `ssh-keygen -t rsa -b 4096 -f /path/to/ssh_key -q -N ""` to create a SSH private/public Key.
 - Run `ssh-copy-id -i /path/to/ssh_key.pub devops@$(hostname) -p port_number` to upload SSH public key to devops user.
 
@@ -32,4 +32,5 @@
 - https://stackoverflow.com/questions/53256739/which-kubernetes-version-is-supported-in-docker-version-18-09
 - https://stackoverflow.com/questions/54818913/ansible-run-kubectl-apply-kube-flannel-yml-not-work
 - https://www.digitalocean.com/community/tutorials/how-to-create-a-kubernetes-cluster-using-kubeadm-on-ubuntu-18-04
+- https://www.tecmint.com/deploy-nginx-on-a-kubernetes-cluster/
 - https://stackoverflow.com/questions/62991596/1-nodes-had-taints-that-the-pod-didnt-tolerate-in-kubernetes-cluster
