@@ -12,6 +12,7 @@
 # How to create a devops user and configure current SSH key?
 
 - Run `sudo useradd devops -s /bin/bash -m` to create the `devops` user.
+- Run `echo "devops ALL=(ALL) NOPASSWD:ALL" | tee /etc/sudoers.d/devops`.
 - Run `ssh-keygen -t rsa -b 4096 -f /path/to/ssh_key -q -N ""` to create a SSH private/public Key.
 - Run `ssh-copy-id -i /path/to/ssh_key.pub devops@$(hostname) -p port_number` to upload SSH public key to devops user.
 
